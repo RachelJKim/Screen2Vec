@@ -16,7 +16,12 @@ class UIEmbedder(nn.Module):
         self.class_size = class_emb_size
 
     def forward(self, text, class_name):
-        text_emb = torch.as_tensor(self.text_embedder.encode(text))
+        #text_emb = torch.as_tensor(self.text_embedder.encode(text))
+        text_emb = self.text_embedder.encode(
+            text, 
+            convert_to_tensor=True, 
+            device=str(self.text_embedder.device)  # typically 'cuda:0' if your model is on CUDA
+        )
         class_emb = self.UI_embedder(class_name)
         x = torch.cat((text_emb, class_emb), 1)
         for index in range(len(text)):
